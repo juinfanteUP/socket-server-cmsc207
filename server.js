@@ -19,17 +19,22 @@ io.on("connection", (socket) => {
 
   console.log("New Web Socket connection");
   
-  socket.on("join-room", ({ username, room }) => {
-    console.log(`[join-room event] [username: ${username}] [room: ${room}] [socket_id:] ${socket.id}`);
-    const user = userJoin(socket.id, username, room);
+
+  // User joined chat room
+  socket.on("join-room", ({ clientId, room }) => {
+    console.log(`[join-room event] [clientId: ${clientId}] [room: ${room}] [socket_id:] ${socket.id}`);
+    const user = userJoin(socket.id, clientId, room);
     socket.join(user.room);
   });
 
+
+  // Send message trigger
   socket.on("send-message", message => {
     const user = getCurrentUser(socket.id);
-    console.log(`[send-message event] [message: ${message}] from user: ${user.username}`);
-    socket.to(user.room).emit("message", formatMessage(user.username, message));
+    console.log(`[send-message event] [message: ${message.body}] from user: ${user.clientId}`);
+    socket.to(user.room).emit("message", formatMessage(message.body, message.isWhisper, message.isAgent, message.senderId, message.clientId));
   });
+
 
   // Runs when client disconnects
   socket.on("disconnect", () => {
@@ -38,7 +43,7 @@ io.on("connection", (socket) => {
     if (user) {
       io.to(user.room).emit(
         "message",
-        formatMessage(botName, `${user.username} has left the chat`)
+        formatMessage(botName, `${user.clientId} has left the chat`)
       );
     }
   });
