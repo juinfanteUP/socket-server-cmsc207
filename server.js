@@ -26,8 +26,8 @@ io.on("connection", (socket) => {
     const user = userJoin(socket.id, clientId, room);
     socket.join(user.room);
     if (clientId == room) {
-      console.log("client joining")
-      socket.emit("client-join-room");
+      console.log(`client joining: ${clientId}`)
+      socket.broadcast.emit("client-join-room", clientId);
     }
   });
 
