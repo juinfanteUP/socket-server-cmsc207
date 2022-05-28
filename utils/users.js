@@ -5,7 +5,7 @@ function userJoin(id, clientId, room) {
   const user = { id, clientId, room };
   
   console.log(`[userJoin fn] id: ${id} clientId: ${clientId} room: ${room}`)
-
+  console.log(user);
   users.push(user);
 
   return user;
