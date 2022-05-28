@@ -25,13 +25,18 @@ io.on("connection", (socket) => {
     console.log(`[join-room event] [clientId: ${clientId}] [room: ${room}] [socket_id:] ${socket.id}`);
     const user = userJoin(socket.id, clientId, room);
     socket.join(user.room);
+    if (clientId == room) {
+      console.log("client joining")
+      socket.emit("client-join-room");
+    }
   });
 
 
   // Send message trigger
   socket.on("send-message", message => {
     const user = getCurrentUser(socket.id);
-    console.log(`[send-message event] [message: ${message.body}] from user: ${user.clientId}`);
+    console.log(user);
+    console.log(`[send-message event] [message: ${message.body}] from user: ${message.clientId}`);
     socket.to(user.room).emit("message", formatMessage(message.body, message.isWhisper, message.isAgent, message.senderId, message.clientId));
   });
 
