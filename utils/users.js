@@ -1,4 +1,4 @@
-const users = [];
+const users = new Object();
 
 // Join user to chat
 function userJoin(id, clientId, room) {
@@ -6,7 +6,8 @@ function userJoin(id, clientId, room) {
   
   console.log(`[userJoin fn] id: ${id} clientId: ${clientId} room: ${room}`)
   console.log(user);
-  users.push(user);
+  
+  users[id] = user;
 
   return user;
 }
@@ -14,28 +15,17 @@ function userJoin(id, clientId, room) {
 // Get current user
 function getCurrentUser(id) {
   console.log(`[getCurrentUser fn] getting user with id: ${id}`)
-  return users.find(user => user.id === id);
+  return users[id];
 }
 
 // User leaves chat
 function userLeave(id) {
   console.log(`[userLeave fn] user with id: ${id} is leaving`)
-  const index = users.findIndex(user => user.id === id);
-
-  if (index !== -1) {
-    return users.splice(index, 1)[0];
-  }
-}
-
-// Get room users
-function getRoomUsers(room) {
-  console.log(`[getRoomUsers fn] get users in room: ${room}`);
-  return users.filter(user => user.room === room);
+  users[id] = null;
 }
 
 module.exports = {
   userJoin,
   getCurrentUser,
   userLeave,
-  getRoomUsers
 };
