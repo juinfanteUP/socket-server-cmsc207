@@ -30,21 +30,43 @@ io.on("connection", (socket) => {
     }
   });
 
-
   // Send message trigger
   socket.on("send-message", message => {
     const user = getCurrentUser(socket.id);
     console.log(user);
     console.log(`[send-message event] [message: ${message.body}] from user: ${message.clientId}`);
-    socket.to(user.room).emit("message", formatMessage(message.body, message.isWhisper, message.isAgent, message.senderId, message.clientId));
+    socket.to(user.room).emit("message", formatMessage(message.body, message.isWhisper, message.isAgent, message.senderId, message.clientId, message.attachmentId, message.fileName, message.fileSize));
+  });
+
+  // Send message trigger
+  socket.on("end-session", clientId => {
+    const user = getCurrentUser(socket.id);
+    console.log(user);
+    console.log(`[end-session event] [sent for user: ${clientId}`);
+    socket.to(user.room).emit("end-session", clientId);
+  });
+
+  // Send message trigger
+  socket.on("allow-upload", conf => {
+    const user = getCurrentUser(socket.id);
+    console.log(user);
+    console.log(`[allow-upload event] [willAllow: ${conf.willAllow} from user: ${conf.clientId}`);
+    socket.to(user.room).emit("allow-upload", conf);
   });
 
   // Client typing
   socket.on("client-typing", message => {
     const user = getCurrentUser(socket.id);
     console.log(`[client-typing event] [message: ${message.body}] from user: ${message.clientId}`);
-    socket.to(user.room).emit("listen-client-type", formatMessage(message.body, message.senderId, message.clientId));
+    socket.to(user.room).emit("listen-client-type", formatMessage(message.body, false, false, message.senderId, message.clientId));
   });
+
+    // Client typing
+    socket.on("widget-updated", message => {
+        const user = getCurrentUser(socket.id);
+        console.log(`[widget-update event] [message: ${message.body}] from user: ${message.clientId}`);
+        socket.to(user.room).emit("command-widget", formatMessage(message.body, false, false, message.senderId, message.clientId));
+    });
 
   // Runs when client disconnects
   socket.on("disconnect", () => {
