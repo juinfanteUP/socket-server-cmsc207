@@ -1,6 +1,6 @@
 const moment = require('moment');
 
-function formatMessage( body, isWhisper, isAgent, senderId, clientId, attachmentId, fileName, fileSize) {
+function formatMessage( body, isWhisper, isAgent, senderId, clientId, attachmentId, fileName, fileSize, conversationId) {
   return {
     body,
     isWhisper,
@@ -10,6 +10,7 @@ function formatMessage( body, isWhisper, isAgent, senderId, clientId, attachment
     attachmentId,
     fileName,
     fileSize,
+    conversationId,
     time: moment().format('h:mm a')
   };
 }

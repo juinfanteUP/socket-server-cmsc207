@@ -35,7 +35,7 @@ io.on("connection", (socket) => {
     const user = getCurrentUser(socket.id);
     console.log(user);
     console.log(`[send-message event] [message: ${message.body}] from user: ${message.clientId}`);
-    socket.to(user.room).emit("message", formatMessage(message.body, message.isWhisper, message.isAgent, message.senderId, message.clientId, message.attachmentId, message.fileName, message.fileSize));
+    socket.to(user.room).emit("message", formatMessage(message.body, message.isWhisper, message.isAgent, message.senderId, message.clientId, message.attachmentId, message.fileName, message.fileSize, message.conversationId));
   });
 
   // Send message trigger
